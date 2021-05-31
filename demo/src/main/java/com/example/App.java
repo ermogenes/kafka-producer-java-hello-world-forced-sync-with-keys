@@ -1,6 +1,7 @@
 package com.example;
 
 import java.util.Properties;
+import java.util.concurrent.ExecutionException;
 
 import org.apache.kafka.clients.producer.Callback;
 import org.apache.kafka.clients.producer.KafkaProducer;
@@ -21,8 +22,10 @@ public final class App {
     /**
      * Says hello to the world.
      * @param args The arguments of the program.
+     * @throws ExecutionException
+     * @throws InterruptedException
      */
-    public static void main(String[] args) {
+    public static void main(String[] args) throws InterruptedException, ExecutionException {
         System.out.println("Kafka Simple Producer");
 
         // Add logger
@@ -48,6 +51,8 @@ public final class App {
             String key = "id_#_" + Integer.toString(i);
             String value = message + " #" + Integer.toString(i);
 
+            logger.info("---- Key: " + key + " ----");
+
             // create a producer record
             ProducerRecord<String, String> record = new ProducerRecord<String,String>(topic, key, value);
 
@@ -68,7 +73,7 @@ public final class App {
                         logger.error("Error while producing", e);
                     }
                 }
-            });
+            }).get();
         }
 
         // producer.flush(); // just flush, or

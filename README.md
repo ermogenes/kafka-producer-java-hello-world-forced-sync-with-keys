@@ -1,5 +1,7 @@
-# kafka-producer-java-hello-world-async-with-keys
-A simple Java Kafka async producer with keys.
+# kafka-producer-java-hello-world-forced-sync-with-keys
+A simple Java Kafka forced sync producer with keys.
+
+**Do not use this in production, it's a bad code, only to study pourposes.**
 
 ## Dependencies (`pom.xml`)
 
@@ -43,6 +45,8 @@ for (int i = 0; i < 10; i++) {
     String key = "id_#_" + Integer.toString(i);
     String value = message + " #" + Integer.toString(i);
 
+    logger.info("---- Key: " + key + " ----");
+
     ProducerRecord<String, String> record = new ProducerRecord<String,String>(topic, key, value);
 
     producer.send(record, new Callback() {
@@ -59,7 +63,7 @@ for (int i = 0; i < 10; i++) {
                 logger.error("Error while producing", e);
             }
         }
-    });
+    }).get();
 }
 
 producer.close();
